@@ -1,3 +1,5 @@
+`docker run -i -t -v /home/nelly/docker-core:/usr/src/CORE orthocore /bin/bash`
+
 ## orthoCORE Installation guide
 
 0. Install docker engine   
