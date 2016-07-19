@@ -53,16 +53,19 @@ GetOptions(
 	'help'     =>   sub { HelpMessage(0) },
         ) or HelpMessage(1);
 
-die "$0 requires a query (--query\nfor help type:\ncorason.pl -h" unless $queries;  ## A genome list is mandatory
-die "$0 requires the list argument (--list\nfor help type:\ncorason.pl -h" unless $lista;  ## A genome list is mandatory
+
 die "$0 requires the rast_ids file (--rast_ids\nfor help type:\ncorason.pl -h" unless $rast_ids;  ## A genome names list is mandatory
-die "$0 requires the special_org argument (--special_org\nfor help type:\ncorason.pl -h" unless $special_org;  ## A genome names list is mandatory
+
+my $list_all=get_lista($list,$verbose,$rast_ids);
+my $number=get_number($list,$list_all,$rast_ids);
 
 my $dir=&Cwd::cwd();            ##The path of your directory
 my $name=pop @{[split m|/|, $dir]};             ##The path of your directory
 my $blast="$name.blast";
 
 printVariables($verbose);
+print "Enter to continue";
+my $pause=<STDIN>;
 
 #####################################################################
 ########## Main ######################################################
@@ -76,58 +79,6 @@ if ($verbose ){print "Your courrent directory: $name\n";}
 my $report="";
 if (-e "$outname/$outname\_Report"){`rm $outname/$outname\_Report`;}
 $report=$report."Queries $queries\tSpecial Organism $special_org\te_value $e_value\tbitscore $bitscore\tcluster radio $cluster_radio\te_core $e_core\trescale $rescale\tlist $lista\tnumber $num\tname folder $name\tdir $dir\tblast $blast\t";
-
-
-#_________  Query blast ________________________________________________________________________________
-	print "\nSearching sequences from query (1_Context_text.pl)\n";
-my $NUM = `wc -l < $rast_ids`;
-	if ($NUM == $num){
-		## All genomes will be procesed!!!!!!!!!!!!!!!!!
-		print("1_Context_text.pl -q $queries -s $special_org -e_value $e_value -b $bitscore -c $cluster_radio -e_cluster $e_cluster -r $rescale -l $lista -n $num -rast_ids $rast_ids -type  prots -makedb ");
-print "Hit enbter to continue\n"
-my $stdino=<STDIN>;
-		system("1_Context_text.pl -q $queries -s $special_org -e_value $e_value -b $bitscore -c $cluster_radio -e_cluster $e_cluster -r $rescale -l $lista -n $num -rast_ids $rast_ids -type  prots -makedb ");
-                }
-        else {
-                print "\nSearching on clusters in reduced list: $lista\n";        
-		system("1_Context_text.pl -q $queries -s $special_org -e_value $e_value -b $bitscore -c $cluster_radio -e_cluster $e_cluster -r $rescale -l $lista -n $num -rast_ids $rast_ids -type prots -makedb");
-               }
-	print "Sequences search finished\n\n";
-#___________________ end Query blast ________________________________________________________________________
-
-print "Analising cluster with hits according to the query sequence\n\n";
-	my $new_data=`ReadingInputs.pl $outname`; 
-	my @st=split(/\t/,$new_data);
-($num,$lista)=split(/\t/,$new_data);
-#$num=$st[0]; 
-#$lista=$st[1];
-	if ($verbose) {print "\n$num clusters found. Ids: $lista\n\n";}
-	my $NumClust= `ls $outname/*.input2|wc -l`;
-	chomp $NumClust;
-	#$NumClust=~s/\r//;
-	print "There are $NumClust similar clusters\n"; 
-	$report=$report. "\n\nThere are $NumClust similar clusters\n"; 
-#__________________________________________________________________________________________________________
-print "Creating query hits tree, without considering the core-clusters\n";
-	`cat $outname/*.input2> $outname/PrincipalHits`;
-
-        print "\nAligning Sequences \n";
-        system "muscle -in $outname/PrincipalHits -out $outname/PrincipalHits.muscle -fasta -quiet -group";
-
-        print "\nShaving alignments with Gblocks\n";
-        system "Gblocks $outname/PrincipalHits.muscle -b4=5 -b5=n -b3=5";
-        system("RenamePrincipalHits.pl $outname PrincipalHits $rast_ids");
-
-        print "Saving as Stockolm format\n";
-	system(" converter.pl $outname/RightNamesPrincipalHits.txt ");
-	#constructing a tree with quicktree with a 100 times bootstrap
-	system "quicktree -i a -o t -b 100 $outname/RightNamesPrincipalHits.stockholm > $outname/PrincipalHits_TREE.tre";
-	system "mv $outname/PrincipalHits_TREE.tre $outname/$outname\_PrincipalHits.tre";
-
-	system "nw_labels -I $outname/$outname\_PrincipalHits.tre>$outname/PrincipalHits.order";
-	my $INPUTS=""; ## Orgs sorted according to a tree (Will be used on the Context draw)
-	my $orderFile="$outname/PrincipalHits.order";
-#______________________________________________________________________________________________________________
 
 	print "Searching genetic core on selected clusters\n";
 	print"2_OrthoGroups.pl -e_core $e_core -list $lista -num $num -rast_ids $rast_ids -outname $outname\n";
@@ -302,3 +253,110 @@ sub printVariables{
 		}
 	}
 ######################################################################
+sub get_number{
+        my $list=shift;
+        my $list_all=shift;
+        my $rast_ids=shift;
+        my $NUM;
+        #if ($verbose){print "list #$list# total list: $list_all\n";}
+
+        if ($list eq ""){
+                $NUM = `wc -l < $rast_ids`;
+                chomp $NUM;
+                $NUM=int($NUM);
+                if ($verbose ){print "Every genome on data base would explored\n"; }
+                }
+        else {
+                if($list_all =~ /not/){
+                        print "Your genome list must be numbers separated by , \n you can select intervals using ':'\n Example: 2,3,4:7,9 means 2,3,4,5,6,7,9";
+                        print"$list_all\n";
+                        exit;
+                        }
+                else{
+                        if ($verbose){print "You will explore genomes $list_all\n";}
+                        my @st=split(",",$list_all);
+                        $NUM=scalar @st;
+                        }
+                }
+                print "You will explore $NUM genomes\n";
+                return $NUM;
+        }
+
+#________________________________________________________________________
+
+sub get_lista{
+        my $list=shift;
+        my $verbose=shift;
+        my $rast_ids=shift;
+        my $result;
+        my $bool=1;
+        my @all;
+
+        if ($list eq ""){
+                print "\nAll genomes would be procesed\n";
+                if (-e $rast_ids){
+                        @all=`cut -f1 $rast_ids`;
+                        for my $genome (@all){chomp $genome;}
+                        @all = grep { $_ ne "" } @all;
+                        $result=join(',',@all);
+                        if($verbose) { for my $genome (@all){print  "#$genome#\t";}}
+                        }
+                else {
+                        print "$rast_ids file is needed\n$!";
+                        exit;
+                        }
+                }
+        else{
+                my @split_list= split(",",$list);
+                #if ($verbose){print "your list is $list\n";}
+                foreach my $st (@split_list){
+                        #if($verbose){print "With elements: #$st#\n";}
+                        if($st=~/\:/){  ## If st is a range of numbers
+                                #if ($verbose){print "Range $st on list\n";}                            
+                                my @range=split(/\:/,$st);
+                                my $init=$range[0];
+                                my $end=$range[1];
+                                my $bool_init=0;
+                                my $bool_end=0;
+
+                                if($init=~/^\d+\z$/) {$bool_init=1;}
+				if($end=~/^\d+\z$/) {$bool_end=1;}
+
+                                if ($init > $end){
+                                        print "ERROR: You selected interval $init:$end, at an interval, you must be sure that initial number is lower than end number\n";
+                                        exit;
+                                        }
+
+                                if($bool_init==1 and $bool_end==1 ){
+                                        for (my $element=$init;$element<=$end;$element++){
+                                                push(@all,$element);
+        #                                       if ($verbose){print "Adding element $element to list\n";}
+
+                                                }
+                                        }
+                                else{
+                                        $bool=$bool_init*$bool_end;
+                                        }
+                                }
+                        else{
+                                ## if st is a number
+                                my $bool_st=0;
+                                if($st=~/^\d+\z$/) {$bool_st=1;}
+                                if ($bool_st==1){
+                                        push(@all,$st);
+                #                       if ($verbose){print "Adding element $st to list\n";}
+                                        }
+                                else{$bool=$bool*$bool_st;}
+                                }
+                        }
+                if($bool==1){
+                        my @sorted_numbers = sort { $a <=> $b } @all;
+                            my @unique = do { my %seen; grep { !$seen{$_}++ } @sorted_numbers };
+                        $result=join(',',@unique)}
+                        else{$result="This is not a list number acepted format, please use only , and : to separate numbers\n";}
+
+                #if ($verbose) {print "Whole list #$result#\n";}
+        }
+        return $result;
+        }
+
