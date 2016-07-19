@@ -39,14 +39,14 @@ sub getDrawInputs;
 
 GetOptions(
         'verbose' => \my $verbose,
-        'queryfile=s' => \my $queries,
-        'special_org=i' => \my $special_org,
+        'set_name=s' => \my $setname,
+        'my_blast=s' => \my $myblast,
         'e_value=f'=> \(my $e_value=0.000001), 		# E value. Minimal for a gene to be considered a hit.
         'bitscore=i'=>\(my $bitscore=0),  		## Revisar el archivo .BLAST.pre para tener idea de este parámetro.
         'cluster_radio=i'=>\(my $cluster_radio=10), 	#number of genes in the neighborhood to be analized
         'e_cluster=f'=>\(my $e_cluster=0.001), #Query search e-value for homologies from reference cluster, values above this will be colored
         'e_core=f'=>\(my $e_core=0.001) ,  
-        'list=s'=>\my $lista , ##Wich genomes would you process in case you might, otherwise left empty for whole DB search
+        'list=s'=>\(my $lista=""), ##Wich genomes would you process in case you might, otherwise left empty for whole DB search
         'rescale=i'=>\(my $rescale = 85000) ,
         'num=i'=>\my $num ,  #the number of genomes to be analized in case you used the option $LIST, comment if $LIST is empty
         'rast_ids=s' => \my $rast_ids,
@@ -54,37 +54,61 @@ GetOptions(
         ) or HelpMessage(1);
 
 
-die "$0 requires the rast_ids file (--rast_ids\nfor help type:\ncorason.pl -h" unless $rast_ids;  ## A genome names list is mandatory
+die "$0 requires the rast_ids file (--rast_ids\nfor help type:\ncore.pl -h" unless $rast_ids;  ## A genome names list is mandatory
+die "$0 requires the set_name  (--set_name\nfor help type:\ncore.pl -h" unless $setname;  ## A genome names list is mandatory
 
-my $list_all=get_lista($list,$verbose,$rast_ids);
-my $number=get_number($list,$list_all,$rast_ids);
+my $list_all=get_lista($lista,$verbose,$rast_ids);
+$num=get_number($lista,$list_all,$rast_ids);
+$lista=$list_all;
 
 my $dir=&Cwd::cwd();            ##The path of your directory
-my $name=pop @{[split m|/|, $dir]};             ##The path of your directory
-my $blast="$name.blast";
+#my $name=pop @{[split m|/|, $dir]};             ##The path of your directory
+my $name=$setname;             ##The path of your directory
+
+my $blast;
+if ($myblast){
+	$blast=$myblast;
+}
+else{
+	## Here run header and blast Pending
+	my $blast="$name.blast";
+}
+
 
 printVariables($verbose);
-print "Enter to continue";
-my $pause=<STDIN>;
 
 #####################################################################
 ########## Main ######################################################
 
-my @LISTA=split(",",$lista);
-my $outname=$queries;
-$outname=~s/\.query//;
+my @LISTA=split(",",$list_all);
+my $outname=$setname;
+#$outname=~s/\.query//;
 if(!-e $outname) {system("mkdir $outname");}
 if ($verbose ){print "Your courrent directory: $name\n";}
 
 my $report="";
 if (-e "$outname/$outname\_Report"){`rm $outname/$outname\_Report`;}
-$report=$report."Queries $queries\tSpecial Organism $special_org\te_value $e_value\tbitscore $bitscore\tcluster radio $cluster_radio\te_core $e_core\trescale $rescale\tlist $lista\tnumber $num\tname folder $name\tdir $dir\tblast $blast\t";
+$report=$report."Set name $setname\t
+                My blast $myblast\t
+		e_core $e_core\t
+		list $lista\t
+		number $num\t
+		name folder $name\t
+		dir $dir\t
+		blast $blast\t";
+
+		#print "
+                #e_value $e_value\t
+                #bitscore $bitscore\t
+		#cluster radio $cluster_radio\t
+		#rescale $rescale\t
+		#";
 
 	print "Searching genetic core on selected clusters\n";
-	print"2_OrthoGroups.pl -e_core $e_core -list $lista -num $num -rast_ids $rast_ids -outname $outname\n";
-	#print "Enter to continue\n";
-	#my $pause=<STDIN>;
-	system("2_OrthoGroups.pl -e_core $e_core -list $lista -num $num -rast_ids $rast_ids -outname $outname");
+	print"2_OrthoGroups.pl -e_core $e_core -list $lista -num $num -rast_ids $rast_ids -outname $outname -name $name -blast $myblast\n ";
+	print "Enter to continue\n";
+	my $pause=<STDIN>;
+	system("2_OrthoGroups.pl -e_core $e_core -list $lista -num $num -rast_ids $rast_ids -outname $outname  -name $name -blast $myblast");
 	print "Core finished!\n\n";
 	my $boolCore= `wc -l $outname/Core`;
 	chomp $boolCore;
@@ -92,18 +116,18 @@ $report=$report."Queries $queries\tSpecial Organism $special_org\te_value $e_val
 	$boolCore=int($boolCore);
 	print "Elements on core: $boolCore!\n";
 #____________________________________________________________________________________________________________
-if ($boolCore>1){
+if ($boolCore>=1){
 	print "There is a core with at least two genes on this cluster\n";
 	$report=$report."\nThere is a core composed by $boolCore orhtolog on this cluster\n";
 	$report=$report. "Enzyme functions on reference organisms are given by:\n";
 	## Obteniendo el cluster del organismo de referenecia mas parecido al query
 	# Abrimos los input files de ese organismo y tomamos el de mejor score	
-	my $specialCluster=specialCluster($special_org);
-	print "Best cluster $specialCluster\n";
-       	my $functions=`cut -f1,2 $outname/FUNCTION/$specialCluster.core.function `;
+	#my $specialCluster=specialCluster($special_org);
+	#print "Best cluster $specialCluster\n";
+       	#my $functions=`cut -f1,2 $outname/FUNCTION/$specialCluster.core.function `;
 #       	print "cut -f1,2 $name/FUNCTION/$specialCluster.core.function ";
 #	print "Function $functions#\n";
-	$report=$report."\n".$functions;
+	#$report=$report."\n".$functions;
 	print "Aligning...\n";
 	system ("multiAlign_gb.pl $num $lista $outname");
 	print "Sequences were aligned\n\n";
@@ -128,17 +152,17 @@ if ($boolCore>1){
 	system "mv $outname/BGC_TREE.tre $outname/$outname\_BGC.tre";
 	system "nw_labels -I $outname/$outname\_BGC.tre>$outname/$outname\_BGC_TREE.order";
 
- 	$orderFile="$outname/$outname\_BGC_TREE.order";
-	print "I will draw SVG clusters with concatenated tree order\n";
-	$INPUTS=getDrawInputs($orderFile);
+# 	$orderFile="$outname/$outname\_BGC_TREE.order";
+#	print "I will draw SVG clusters with concatenated tree order\n";
+#	$INPUTS=getDrawInputs($orderFile);
 	}
 	else{  ### If there is no core, then sort according to principal hits
 		$report=$report. "The only gen on common on every cluster is the main hit\n";
-		if (-e $orderFile){
-			print "I will draw SVG clusters with the single hits order\n";
-			$report=$report. "I will draw with the single hits order\n";
-			$INPUTS=getDrawInputs($orderFile);
-        		}
+#		if (-e $orderFile){
+#			print "I will draw SVG clusters with the single hits order\n";
+#			$report=$report. "I will draw with the single hits order\n";
+#			$INPUTS=getDrawInputs($orderFile);
+ #       		}
 		my $line =`perl -ne \'print if \$\. == 2\' $outname/PrincipalHits `;
  		my $len = map $_, $line =~ /(.)/gs;
 		$len--;
@@ -146,14 +170,14 @@ if ($boolCore>1){
         	}
 #_____________________________________________________________________________________________
 
-print "Now SVG file will be generated with inputs: $INPUTS\n\n";
+#print "Now SVG file will be generated with inputs: $INPUTS\n\n";
 #	print "3_Draw.pl $rescale $INPUTS $outname";
-print "pausa to continue\n";
-my $stdin=<STDIN>;
-	system("3_Draw.pl $rescale $INPUTS $outname");
+#print "pausa to continue\n";
+#my $stdin=<STDIN>;
+#	system("3_Draw.pl $rescale $INPUTS $outname");
 
-print "SVG  file generated\n\n";
-`mv $outname/Contextos.svg $outname/$outname\.svg`;
+#print "SVG  file generated\n\n";
+#`mv $outname/Contextos.svg $outname/$outname\.svg`;
 
 open (REPORTE, ">$outname/$outname\_Report") or die "Couldn't open reportfile $!";
 print REPORTE $report;
@@ -219,7 +243,7 @@ sub cleanFiles{
 sub getDrawInputs{
 	my $file=shift;
 	my $INPUTS="";
-	open (NAMES,$file) or die "Couldnt open $orderFile $!";
+	open (NAMES,$file) or die "Couldnt open $file $!";
 
 	foreach my $line (<NAMES>){
 		chomp $line;
@@ -237,19 +261,18 @@ sub getDrawInputs{
 
 sub printVariables{
 	if ($verbose){
-		print "Queries $queries\n";
-		print "Special Organism $special_org\n";
-		print "e_value $e_value\n";
-		print "bitscore $bitscore\n";
-		print "cluster radio $cluster_radio \n";
+		print "set_name $setname\n";
 		print "e_core $e_core\n ";
-		print "rescale $rescale \n";
+		print "blast $blast\n";
 		print "list $lista \n";
 		print "number $num \n";
-		print "name folder $name\n";
 		print "dir $dir \n";
-		print "blast $blast\n";
 		print  "verbose  $verbose\n";
+		print "name folder $name\n";
+		#print "bitscore $bitscore\n";
+		#print "e_value $e_value\n";
+		#print "cluster radio $cluster_radio \n";
+		#print "rescale $rescale \n";
 		}
 	}
 ######################################################################

@@ -5,7 +5,7 @@ use warnings;
 ###### This script add genome number to fasta headers
 ##     Needs RAST.IDs
 
-my $genome_dir="MINI";
+my $genome_dir="GENOMES";
 my $lista=$ARGV[0];
 my $outname=$ARGV[1];
 my $outfile="Concatenados.faa";
@@ -28,7 +28,7 @@ sub Concatenar{
                 #print "JobId = #$ids[0]# Name =$ids[2]\n";
 
 
-                open(EACH, "$outname/$genome_dir/$HitId.faa") or die "$outname/$genome_dir/$HitId.faa does not exists $!";
+                open(EACH, "$genome_dir/$HitId.faa") or die "$genome_dir/$HitId.faa does not exists $!";
 
 
                 while(my $line2=<EACH>){

@@ -45,7 +45,7 @@ my @Required=Options(\$verbose,\$inputblast,\$output,\$outname);
 ########################################################
 ## Main
 ## 1 Find Best Hits
-#print "\nFinding Hits for each gene, takes some minutes, be patient!\n"; 
+print "\nFinding Hits for each gene, takes some minutes, be patient!\n"; 
 
 &bestHit($outname,\%BH,$inputblast);
 
@@ -53,7 +53,7 @@ foreach my $peg (keys %BH){
 #print " Peg: $peg\n";
 	foreach my $org (keys %{$BH{$peg}}){
 		if (-exists $BH{$peg}{$org}[0] and exists $BH{$peg}{$org}[1]){
-			#print "Org $org, Percentage $BH{$peg}{$org}[0], Peg2 $BH{$peg}{$org}[1]\n\n";
+#			print "Org $org, Percentage $BH{$peg}{$org}[0], Peg2 $BH{$peg}{$org}[1]\n\n";
 			}		
 		}
 	}
@@ -108,16 +108,17 @@ sub bestHit(){
 	my $BH=shift;
 	my $input=shift;
 	open(FILE, "$outname/$input") or die "Couldnt open $outname/$input file \n$!";
+	print "I have open $outname/$input\n";
 
 	foreach my $line(<FILE>) {
 		my @sp = split(/\t/, $line);
-		#print $sp[0] . "\t" . $sp[1] . "\t\t" . $sp[2] . "\n";
+	#	print "Reading line".$sp[0] . "\t" . $sp[1] . "\t\t" . $sp[2] . "\n";
 
 		my $o1 = ''; ## Get organism from column A (The query)
-		if($sp[0] =~ m/\|(\d+\_\d+)$/) { $o1 = $1; }
+		if($sp[0] =~ m/\|(\d+)$/) { $o1 = $1; }
 
 		my $o2 = '';
-		if($sp[1] =~ m/\|(\d+\_\d+)$/) {  
+		if($sp[1] =~ m/\|(\d+)$/) {  
 			$o2 = $1; ## Get Organism from Column B (The hit)
 			#if($o1 eq $o2) { next; }#We dont want the same organism
 		} 
@@ -149,17 +150,21 @@ sub ListBidirectionalBestHits(){
 	my $RefBH=shift;
 	my $count=0;
 	for my $gen (keys %$RefBH) {
+#		print "Gen $gen\n";
 		for my $org (keys %{$RefBH->{$gen}}) {#Organismos kk
-			
+#			print "Org $org\n";
+
 			my $hit=$RefBH->{$gen}{$org}[1];
+#			print "hit $hit\n";
 			if($hit and( exists $RefBH->{$hit})) {
 				my $oo1 = '';
-				if($gen =~ m/\|(\d+\_\d+)$/) { 
+				if($gen =~ m/\|(\d+)$/) { 
 					$oo1 = $1; 
 					}
 				if(exists $RefBH->{$hit}{$oo1}[1] and $gen eq $RefBH->{$hit}{$oo1}[1]) {
 					$RefBiBestHits->{$gen}{$org}=$hit;
 					$count++;
+	#				print "Bidirectional $gen: $hit\n";
 					}
 				}
 			}
@@ -174,12 +179,12 @@ sub SelecGroup(){
 	#my $refRequired=shift;
 	for my $gen (keys %$refBBH){
 		my $oo1 = '';
-		if($gen =~ m/\|(\d+\_\d+)$/) { $oo1 = $1; }
+		if($gen =~ m/\|(\d+)$/) { $oo1 = $1; }
 		#print "$oo1\t";
 		#print " $gen: @ORGS \n"; ## Uncomment to see organism where query has Best Bidirectional Hit
 
 		my @ORGS=sort (keys %{$refBBH->{$gen}});
-		#print " $gen: @ORGS \n"; ## Uncomment to see organism where query has Best Bidirectional Hit
+		print " $gen: @ORGS \n"; ## Uncomment to see organism where query has Best Bidirectional Hit
 
 		if ($oo1~~@Required){	
 			#print "$oo1: @Required\t";	

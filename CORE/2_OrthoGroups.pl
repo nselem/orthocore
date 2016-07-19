@@ -10,8 +10,6 @@ use Cwd;
 
 
 my $dir2=&Cwd::cwd();            ##The path of your directory
-my $name=pop @{[split m|/|, $dir2]};                       ##Name of the group (Taxa, gender etc)
-my $BLAST2="Core$name.blast";
 
 
 GetOptions(
@@ -22,15 +20,18 @@ GetOptions(
 	'num=i'=>\my $num,
         'rast_ids=s' => \my $RAST_IDs2,
 	'outname=s'=>\my $outname,
+	'name=s'=>\my $name,
+	'blast=s'=>\my $blast,
         );
 
 die "$0 requires the argument (-lista\n" unless $lista;
 die "$0 requires the argument (-outname\n" unless $outname;  ## Output directory
 die "$0 requires the argument (-num\n" unless $num;
-die "$0 requires the argument (-outname\n" unless $outname;
+die "$0 requires the argument (-name\n" unless $name;
 
 #print "This script will help you find a core between genomes or clusters\n";
 #print "verbose $verbose\n";
+my $BLAST2="Core$name.blast";
 
 if ($verbose){
 print "list$lista\n";
@@ -48,13 +49,12 @@ sub Star;
 ########## Main ######################################################
 
 my @LISTA=split(",",$lista);
-
-run_blast($outname,$e_core,$lista,$BLAST2);
+run_blast($outname,$e_core,$lista,$BLAST2,$blast);
 
 print "I will run allvsall with blast $outname/$BLAST2\n";
 
 
-#print "`perl allvsall.pl -R $lista -v 0 -i $BLAST2 -outname $outname`\n";
+print "`perl allvsall.pl -R $lista -v 0 -i $BLAST2 -outname $outname`\n";
 system(" allvsall.pl -R $lista -v 0 -i $BLAST2 -outname $outname");
 #`perl allvsall.pl -R 8,12,57,58,59,60,61,248,261,262,273,275,277,282,310 -v 0 -i ClusterTools1.blast`;
 
@@ -160,20 +160,33 @@ sub run_blast{
 	my $e=shift;
 	my $list=shift;
 	my $blastname=shift;
-	if (-e "$outname/MINI/Concatenados.faa"){
-		#print "File concatenados.faa removed\n";
-		unlink ("$outname/MINI/Concatenados.faa");
+	my $blast=shift;
+	if ($blast){
+		print "BlastFile has been provided\n";
+	#	print "Enter to continue\n";
+	#	my $pause=<STDIN>;
+		system("cp $blast $outname/$blastname");
 		}
-	system(" header2.pl $list $outname");
+	else{
+		print "I will produce an allvs all BlastFile\n";
+	#	print "Enter to continue\n";
+	#	my $pause=<STDIN>;
+		if (-e "$outname/GENOMES/Concatenados.faa"){
+			#print "File concatenados.faa removed\n";
+			unlink ("$outname/GENOMES/Concatenados.faa");
+			}
+		#system("header2.pl $list $outname"); on docker replace by this line
+		system("perl header2.pl $list $outname");
 
-	`makeblastdb -in $outname/MINI/Concatenados.faa -dbtype prot -out $outname/MINI/Database.db`;
-	`blastp -db $outname/MINI/Database.db -query $outname/MINI/Concatenados.faa -outfmt 6 -evalue $e -num_threads 4 -out $outname/$blastname`;
+		`makeblastdb -in $outname/GENOMES/Concatenados.faa -dbtype prot -out $outname/GENOMES/Database.db`;
+		`blastp -db $outname/GENOMES/Database.db -query $outname/GENOMES/Concatenados.faa -outfmt 6 -evalue $e -num_threads 4 -out $outname/$blastname`;
 	
+		}
 	if (-e "$outname/Core"){
-	
 		#print "File Core removed\n";
 		unlink ("$outname/Core");
 		}
+
 	if (-e "$outname/OUTSTAR" ){system ("rm -r $outname/OUTSTAR");}
 	system("mkdir $outname/OUTSTAR");
 	#print "Se corrió el blast\n";
@@ -181,7 +194,6 @@ sub run_blast{
 	#print "Inicia búsqueda de listas de ortologos \n";
 
 }
-
 #_____________________________________________________________________________________
 sub Star{
 	print "Starting stars\n";

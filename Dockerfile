@@ -39,7 +39,7 @@ RUN cd vim && ./configure && make VIMRUNTIMEDIR=/usr/share/vim/vim74 && make ins
 
 #_________________________________________________________________________________________________
 ## CORASON
-RUN git clone https://github.com/nselem/orthocore
+RUN cachebuster=35 git clone https://github.com/nselem/orthocore
 RUN mkdir /opt/CORE
 
  ######### PATHS ENVIRONMENT
