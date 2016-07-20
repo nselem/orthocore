@@ -25,10 +25,11 @@ my @lista0=split(",",$list); ## MINI genomes list
 my @sorted_clust = sort @lista0; ## Sorted MINI genomes list
 
 for(my $gen=1;$gen<=$TOTAL;$gen++){
-	print "&align $gen,$NUM2,$Working_dir,@sorted_clust";  ## Each gene will be aligned
+#	print "&align $gen,$NUM2,$Working_dir,@sorted_clust";  ## Each gene will be aligned
 	&align($gen,$NUM2,$Working_dir,@sorted_clust);  ## Each gene will be aligned
 	}
 
+print "system mkdir $dir2/$infile/CONCATENADOS\n";
 system("mkdir $dir2/$infile/CONCATENADOS");
 
 print "Gblocks and muscle have finished\n";

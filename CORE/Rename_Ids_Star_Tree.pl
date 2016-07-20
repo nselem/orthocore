@@ -59,7 +59,7 @@ sub readSequence{
 		 if ($line=~m/>/){
                         $Org=$line;
 			my $peg="";
-			if ($Org=~/org(\d*)\_(\d*)$/){
+			if ($Org=~/org(\d*)$/){
                         	#$Org=~s/>org//;
                         	#$Org=~s/\_\d*$//;
 				$Org=$1;
@@ -67,7 +67,7 @@ sub readSequence{
                       		#$Org=~s/peg\_\d*$//;
                         	if($verbose){print "Org #$Org# Peg $peg\n";}
 				}
-                        my $name=$refNAMES->{$Org}."_peg_"."$peg"."_org_"."$Org";
+                        my $name=$refNAMES->{$Org}."_org_"."$Org";
                         print BAYES ">$name\n";
                         }
                 else{# 

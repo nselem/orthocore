@@ -108,7 +108,7 @@ sub bestHit(){
 	my $BH=shift;
 	my $input=shift;
 	open(FILE, "$outname/$input") or die "Couldnt open $outname/$input file \n$!";
-	print "I have open $outname/$input\n";
+	#print "I have open $outname/$input\n";
 
 	foreach my $line(<FILE>) {
 		my @sp = split(/\t/, $line);
@@ -184,7 +184,7 @@ sub SelecGroup(){
 		#print " $gen: @ORGS \n"; ## Uncomment to see organism where query has Best Bidirectional Hit
 
 		my @ORGS=sort (keys %{$refBBH->{$gen}});
-		print " $gen: @ORGS \n"; ## Uncomment to see organism where query has Best Bidirectional Hit
+		#print " $gen: @ORGS \n"; ## Uncomment to see organism where query has Best Bidirectional Hit
 
 		if ($oo1~~@Required){	
 			#print "$oo1: @Required\t";	

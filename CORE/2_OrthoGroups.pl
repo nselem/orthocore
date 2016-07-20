@@ -54,8 +54,9 @@ run_blast($outname,$e_core,$lista,$BLAST2,$blast);
 print "I will run allvsall with blast $outname/$BLAST2\n";
 
 
-print "`perl allvsall.pl -R $lista -v 0 -i $BLAST2 -outname $outname`\n";
-system(" allvsall.pl -R $lista -v 0 -i $BLAST2 -outname $outname");
+print "`allvsall.pl -R $lista -v 0 -i $BLAST2 -outname $outname`\n";
+system("allvsall.pl -R $lista -v 0 -i $BLAST2 -outname $outname");
+#system(" allvsall.pl -R $lista -v 0 -i $BLAST2 -outname $outname");
 #`perl allvsall.pl -R 8,12,57,58,59,60,61,248,261,262,273,275,277,282,310 -v 0 -i ClusterTools1.blast`;
 
 print "Starting Star groups \n num $num\n list $lista\n";
@@ -63,9 +64,11 @@ my $corebool=Star($outname,$num,$lista);
 
 if($corebool != 0){
 print "SearchAminoacidsFromCore.pl $lista $outname\n";
+#system("SearchAminoacidsFromCore.pl $lista $outname");
 system("SearchAminoacidsFromCore.pl $lista $outname");
 
 print "ReadReaction $lista $num $outname\n";
+#system("ReadReaccion.pl $lista $num $outname");
 system("ReadReaccion.pl $lista $num $outname");
 }
 else { print "There is no star-core on this clusters\n";}
@@ -176,7 +179,7 @@ sub run_blast{
 			unlink ("$outname/GENOMES/Concatenados.faa");
 			}
 		#system("header2.pl $list $outname"); on docker replace by this line
-		system("perl header2.pl $list $outname");
+		system("header2.pl $list $outname");
 
 		`makeblastdb -in $outname/GENOMES/Concatenados.faa -dbtype prot -out $outname/GENOMES/Database.db`;
 		`blastp -db $outname/GENOMES/Database.db -query $outname/GENOMES/Concatenados.faa -outfmt 6 -evalue $e -num_threads 4 -out $outname/$blastname`;
@@ -204,6 +207,7 @@ sub Star{
 	my $MIN=$NUM-1;
 
 	  system("cut -f2-$COLS $outname/OUTSTAR/Out.Ortho | sort | uniq -c |  awk '\$1>$MIN' >$outname/Core0");
+#	  print "system cut -f2-$COLS $outname/OUTSTAR/Out.Ortho | sort | uniq -c |  awk '\$1>$MIN' >$outname/Core0";
 
 	my $corebool=0;
 	open (CORE0,"<","$outname/Core0") or die "Could not open the file $outname/Core0:$!";

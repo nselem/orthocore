@@ -167,6 +167,7 @@ sub concatenar{
 	############3 Hago todo el archivo una sola cadena sin saltos de linea
 		my $archivo=join("",@fasta); ## HAcemos una sola cadena
 		$archivo=~s/\n//g;### Eliminamos saltos de linea
+#print "Archivo $archivo \n";
 		my @cadenas=split(">",$archivo);###En el arreglo cadenas cortamos la linea gigante
 						###siempre que aparezca el caracter >
 		## Partiendo el archivo en secuencias de una linea separadas por el >
@@ -177,7 +178,7 @@ sub concatenar{
 	
 		if($verbose){### imprimiendo las cadenas para checar que este todas
 			foreach my $item (@cadenas) {
-			#	print "Cadenas: $item\n";
+				print "Cadenas: $item\n";
 				}
 		#	print "##########################\n";
 		}
@@ -187,18 +188,18 @@ sub concatenar{
 		#organismos
 		 #       print "En la llave KEY:$key\n"; 
 			if($verbose){	print "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n";
-		        	print "KEY:$key\n"; 
+	#	        	print "KEY:$key\n"; 
 			}
 		#	print "Concatenando el organismo #$key#\n";       
 			foreach my $cadena (@cadenas){	# Para cada cadena
 				my $number=$cadena;
 				my $subcadena;
 
-				if($number=~/(\d*\_\d*)/){
+				if($number=~/org(\d*)/){
 					$subcadena="org"."$1";
 				}
 				#$subcadena=~s/org//;
-		#		print "Key #$key# subcadena #$subcadena#\n\n";
+	#		print "Key #$key# subcadena #$subcadena#\n\n";
 					
 	              		if($verbose){print"Subcadena $subcadena Key $key \n";}
 				if($subcadena eq $key){ # si corresponde realmente a su clave

@@ -78,7 +78,7 @@ sub ReadFasta{
 	foreach my $mini(@ALL){
 		chomp($mini);
 		####### llena hash con encabezado-secuencia#####
-		open (CU, "$dir/$outname/MINI/$mini.faa") or die "Could not open $dir/$outname/$mini.faa $!\n\n";
+		open (CU, "$dir/GENOMES/$mini.faa") or die "Could not open $dir/$outname/$mini.faa $!\n\n";
 		#print "$dir/MINI/$mini.faa\n";
 		
   		while(<CU>){	
@@ -166,7 +166,7 @@ sub byOrganism{
 			$gen=">$gen";
 	#		print "#$gen#\n";
 			
-			if ($gen=~/\>fig\|\d*.\d*\.peg\.\d*\|(\d*\_\d*)$/){
+			if ($gen=~/\>fig\|\d*.\d*\.peg\.\d*\|(\d*)$/){
 	#			print "Este gen tiene organismo #$1#\n";		
 				if (!exists $Orgs{$1}){
 					$Orgs{$1}=[];

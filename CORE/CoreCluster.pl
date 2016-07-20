@@ -108,7 +108,12 @@ $report=$report."Set name $setname\t
 	print"2_OrthoGroups.pl -e_core $e_core -list $lista -num $num -rast_ids $rast_ids -outname $outname -name $name -blast $myblast\n ";
 	print "Enter to continue\n";
 	my $pause=<STDIN>;
-	system("2_OrthoGroups.pl -e_core $e_core -list $lista -num $num -rast_ids $rast_ids -outname $outname  -name $name -blast $myblast");
+	if($blast){
+		system("2_OrthoGroups.pl -e_core $e_core -list $lista -num $num -rast_ids $rast_ids -outname $outname  -name $name -blast $myblast");
+	}
+	else{
+		system("2_OrthoGroups.pl -e_core $e_core -list $lista -num $num -rast_ids $rast_ids -outname $outname  -name $name ");
+	}
 	print "Core finished!\n\n";
 	my $boolCore= `wc -l $outname/Core`;
 	chomp $boolCore;
@@ -129,6 +134,9 @@ if ($boolCore>=1){
 #	print "Function $functions#\n";
 	#$report=$report."\n".$functions;
 	print "Aligning...\n";
+	print "system (perl multiAlign_gb.pl $num $lista $outname)\n";
+	print "Enter to continue\n";
+	my $paus=<STDIN>;
 	system ("multiAlign_gb.pl $num $lista $outname");
 	print "Sequences were aligned\n\n";
 
@@ -149,9 +157,6 @@ if ($boolCore>=1){
 
 	print "Constructing a tree with quicktree with a 100 times bootstrap\n";
 	system "quicktree -i a -o t -b 100 $outname/RightNames.stockholm > $outname/BGC_TREE.tre";
-	system "mv $outname/BGC_TREE.tre $outname/$outname\_BGC.tre";
-	system "nw_labels -I $outname/$outname\_BGC.tre>$outname/$outname\_BGC_TREE.order";
-
 # 	$orderFile="$outname/$outname\_BGC_TREE.order";
 #	print "I will draw SVG clusters with concatenated tree order\n";
 #	$INPUTS=getDrawInputs($orderFile);
@@ -236,7 +241,7 @@ sub cleanFiles{
         `rm -r $outname/*.stockholm`;
         `rm -r $outname/*.faa`;
         `rm -r $outname/*.blast`;
-        `rm -r $outname/*.txt`;
+#        `rm -r $outname/*.txt`;
         }
 #_____________________________________________________________________________________
 

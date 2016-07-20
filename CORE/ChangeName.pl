@@ -163,7 +163,7 @@ sub EscribiendoSalida{  #######Necesita a @file lleno
 			#$line=">"."org"."$cont"; ########## y las cambio por >org#		
 			#$cont=$cont+1;
 			my $oo1 = '';
-                	if($line =~ m/\|(\d*\_\d+)$/) { $oo1 = $1; }
+                	if($line =~ m/\|(\d*)$/) { $oo1 = $1; }
 			$line=">org".$oo1;
 			}
 		if($verbose){print "$line\n";}     ###imprimo en pantalla su secuencia concatenada 

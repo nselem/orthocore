@@ -67,17 +67,18 @@ sub EscribeSalida {
 
 	my $ReactionFile="$dir/GENOMES/$org\.txt";  ## File cvs from RAST with ALL the reactions (From the spreadsheet reaction)
 	#my $FigsFile="$dir/$num.figs"; ## File with the figs or feachures id for wich we want the function
-	my $genome_file="$dir/$outname/MINI/$num.faa";
+	my $genome_file="$dir/GENOMES/$org.faa";
 
-	my $core_file="$dir/$outname/$NAME/FASTAINTERporORG/$num.interFastatodos";
-	#print "El core $core_file $dir/$NAME/FASTAINTERporORG/$num.interFastatodos \n";
+	my $core_file="$dir/$outname/$NAME/FASTAINTERporORG/$org.interFastatodos";
+	print "El core $core_file $dir/$NAME/FASTAINTERporORG/$org.interFastatodos \n";
 	#print"En lista $dir/$NAME/FASTAINTERporORG/$num.interFastatodos\n";
 	#print "$genome_file\n";	
 
 	my @Genome=readList($genome_file);
 	@CORE=readList($core_file);  ## Fills Querys with the querys figs  ##Cambiarlo al interFAsta todos
+#	foreach my $gen (@CORE){print "Gen in core $gen\n";}
 	@COMPLEMENT=complement(\@Genome,\@CORE);
-
+#	foreach my $gen (@COMPLEMENT){print "Gen in complement $gen\n";}
 	#foreach my $gen (@Genome){print "$gen\n";}
 	#foreach my $gen (@CORE){print "$gen\n";}
 	#foreach my $gen (@COMPLEMENT){print "$gen\n";}
@@ -143,7 +144,7 @@ sub readList{
 	foreach my $line (@Genome) {
 		chomp $line;
 		if ($line=~/>/ ){
-		$line=~s/\|\d*\_\d*$//g;
+		$line=~s/\|\d*$//g;
 		$line=~s/>//g;
 	#	print("#$line#\n");
 			push(@LContent,$line)
@@ -263,8 +264,14 @@ sub mainFig{  ## Returns the function for each gene (Sorted by Fig number)
 	foreach my $fig (@QUERYS){
 	#	print ">$fig<\n";
 		my $peg= $fig;
-		if ($peg=~/peg/ ){$peg=~s/.+peg.//;}
-		else{ $peg=~s/.+rna.//;	}
+		if ($peg=~/peg/ ){
+			$peg=~s/.+peg.//;
+			$peg=~s/\|\d+$//;
+			}
+		else{ 
+			$peg=~s/.+rna.//;	
+			$peg=~s/\|\d+$//;
+			}
 
 		push(@UNSORTED,$peg);
 		$PEGS{$peg}=$fig;
