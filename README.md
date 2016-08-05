@@ -41,7 +41,7 @@ file.query (aminoacid fasta file) Save as many queries as you wish to process.
 
 ### 2.2 Run your docker nselem/evodivmet image  
 
-`$ docker run -i -t -v /mypath/mydir:/usr/src/CORE  nselem/evodivmet /bin/bash`
+`$ docker run -i -t -v /mypath/mydir:/usr/src/CORE  orthocore /bin/bash`
 
 **/mypath/mydir/** is your local directory were you store your inputs, can have any name you choose.  
 Use absolute paths, if you don’t know the path to your dir, place yourself on your directory and type on the terminal  
@@ -51,7 +51,7 @@ Use absolute paths, if you don’t know the path to your dir, place yourself on 
 
 ### 2.3 Run CORASON inside your docker  
 
-`$ orthocore.pl -q yourquery.query -rast_ids yourRAST.Ids -s yourspecial_org`
+`$ orthocore.pl -q yourquery.query -rast_ids yourRAST.Ids `
 once you finished all your queries exit the container  
 `$ exit`  
 ### 2.4 Read your results ! 
