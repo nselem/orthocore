@@ -23,13 +23,13 @@ You may need to restart your computer and not just log out from your session in 
 Test your docker engine with the command:  
 `$ docker run hello-world`  
 
-###1 Download CORASON images from DockerHub
+###1 Download ORTHOCORE images from DockerHub
 `$ docker pull nselem/orthocore:latest  `  
 
 #####Important  
 `docker pull ` may be slow depending on your internet connection, because nselem/evodivmet docker-image is being downloaded, its only this time won’t happen again.
 
-### 2 Run CORASON
+### 2 Run ORTHOCORE
 #### 2.1 Set your database  
 Create an empty directory that contains your [[Input Files]]: RAST-genome data base, Rast_Ids file and file.query  
 `$ mkdir mydir`  
