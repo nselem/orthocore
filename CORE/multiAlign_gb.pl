@@ -45,9 +45,9 @@ sub align{
 	my $Working_dir=shift;
 	my @sorted_clusters=@_;
 
+	print "muscle -in $Working_dir/FASTAINTER/$gen.interFastatodos -out $Working_dir/ALIGNMENTS_GB/$gen.muscle.pir -fasta -quiet -group";
 	system "muscle -in $Working_dir/FASTAINTER/$gen.interFastatodos -out $Working_dir/ALIGNMENTS_GB/$gen.muscle.pir -fasta -quiet -group";
 
-#	print "muscle -in $Working_dir/FASTAINTER/$gen.interFastatodos -out $Working_dir/ALIGNMENTS_GB/$gen.muscle.pir -fasta -quiet -group";
 	my $nombre="$Working_dir/ALIGNMENTS_GB/$gen.muscle.pir";
 	open(FILE2,$nombre)or die "Couldnt open $nombre $!\n";
 	#print("Se abrio el archivo $nombre\n");

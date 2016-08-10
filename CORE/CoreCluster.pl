@@ -106,8 +106,8 @@ $report=$report."Set name $setname\t
 
 	print "Searching genetic core on selected clusters\n";
 	print"2_OrthoGroups.pl -e_core $e_core -list $lista -num $num -rast_ids $rast_ids -outname $outname -name $name -blast $myblast\n ";
-	print "Enter to continue\n";
-	my $pause=<STDIN>;
+	#print "Enter to continue\n";
+	#my $pause=<STDIN>;
 	if($blast){
 		system("2_OrthoGroups.pl -e_core $e_core -list $lista -num $num -rast_ids $rast_ids -outname $outname  -name $name -blast $myblast");
 	}
@@ -115,9 +115,9 @@ $report=$report."Set name $setname\t
 		system("2_OrthoGroups.pl -e_core $e_core -list $lista -num $num -rast_ids $rast_ids -outname $outname  -name $name ");
 	}
 	print "Core finished!\n\n";
-	my $boolCore= `wc -l $outname/Core`;
+	my $boolCore= `wc -l <$outname/Core`;
 	chomp $boolCore;
-	$boolCore=~s/[^0-9]//g;
+	#$boolCore=~s/[^0-9]//g;
 	$boolCore=int($boolCore);
 	print "Elements on core: $boolCore!\n";
 #____________________________________________________________________________________________________________
@@ -135,8 +135,8 @@ if ($boolCore>=1){
 	#$report=$report."\n".$functions;
 	print "Aligning...\n";
 	print "system (perl multiAlign_gb.pl $num $lista $outname)\n";
-	print "Enter to continue\n";
-	my $paus=<STDIN>;
+	#print "Enter to continue\n";
+	#my $paus=<STDIN>;
 	system ("multiAlign_gb.pl $num $lista $outname");
 	print "Sequences were aligned\n\n";
 

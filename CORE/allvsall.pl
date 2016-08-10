@@ -41,6 +41,9 @@ my $outname;
 my %BH = (); #Hash de hashes
 my %BiBestHits;
 my @Required=Options(\$verbose,\$inputblast,\$output,\$outname);
+if (-e "$outname/OUTSTAR" ){system ("rm -r $outname/OUTSTAR");}
+system("mkdir $outname/OUTSTAR");
+
 #################################################################################################
 ########################################################
 ## Main
@@ -164,7 +167,7 @@ sub ListBidirectionalBestHits(){
 				if(exists $RefBH->{$hit}{$oo1}[1] and $gen eq $RefBH->{$hit}{$oo1}[1]) {
 					$RefBiBestHits->{$gen}{$org}=$hit;
 					$count++;
-	#				print "Bidirectional $gen: $hit\n";
+#				print "Bidirectional $gen: $hit\n";
 					}
 				}
 			}
@@ -175,7 +178,9 @@ sub ListBidirectionalBestHits(){
 sub SelecGroup(){
 	my $outname=shift;
 	my $refBBH=shift;
-	open (OUT,">$outname/OUTSTAR/$output");
+	my $bool=0;
+	open (OUT,">$outname/OUTSTAR/$output") or die "Could not open $outname/OUTSTAR/$output $!";
+	print "$outname/OUTSTAR/$output has been opened\n";
 	#my $refRequired=shift;
 	for my $gen (keys %$refBBH){
 		my $oo1 = '';
@@ -184,11 +189,13 @@ sub SelecGroup(){
 		#print " $gen: @ORGS \n"; ## Uncomment to see organism where query has Best Bidirectional Hit
 
 		my @ORGS=sort (keys %{$refBBH->{$gen}});
-		#print " $gen: @ORGS \n"; ## Uncomment to see organism where query has Best Bidirectional Hit
+		my $size=@ORGS;
+	#	print " $gen:$size: @ORGS \n"; ## Uncomment to see organism where query has Best Bidirectional Hit
 
 		if ($oo1~~@Required){	
 			#print "$oo1: @Required\t";	
 			if(&IsEverybody(\@Required,\@ORGS) ){
+				$bool=1;
 				############### Print ortologous list of the subgroup ######################
  				print OUT "$oo1\t";
 				for(my $i=0;$i<scalar  @ORGS;$i++){			
@@ -209,6 +216,7 @@ sub SelecGroup(){
 			}
 		}
 	close OUT;
+	if ($bool==0){print "There is no core on this set of organisms, try removing some of them\n";}
 	}
 
 #_________________________________________________________________________________

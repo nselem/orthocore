@@ -61,21 +61,21 @@ system("allvsall.pl -R $lista -v 0 -i $BLAST2 -outname $outname");
 
 print "Starting Star groups \n num $num\n list $lista\n";
 my $corebool=Star($outname,$num,$lista);
-print "Pause to continue";
-my $pause=<STDIN>;
+#print "Pause to continue";
+#my $pause=<STDIN>;
 
 if($corebool != 0){
 print "SearchAminoacidsFromCore.pl $lista $outname\n";
 #system("SearchAminoacidsFromCore.pl $lista $outname");
 system("SearchAminoacidsFromCore.pl $lista $outname");
 print "Pause to continue";
-$pause=<STDIN>;
+#$pause=<STDIN>;
 
 print "ReadReaction $lista $num $outname\n";
 #system("ReadReaccion.pl $lista $num $outname");
 system("ReadReaccion.pl $lista $num $outname");
 print "Pause to continue";
-$pause=<STDIN>;
+#$pause=<STDIN>;
 }
 else { print "There is no star-core on this clusters\n";}
 ######################################################################
@@ -196,8 +196,8 @@ sub run_blast{
 		unlink ("$outname/Core");
 		}
 
-	if (-e "$outname/OUTSTAR" ){system ("rm -r $outname/OUTSTAR");}
-	system("mkdir $outname/OUTSTAR");
+	#if (-e "$outname/OUTSTAR" ){system ("rm -r $outname/OUTSTAR");}
+	#system("mkdir $outname/OUTSTAR");
 	#print "Se corrió el blast\n";
 	#print "\nLista $list#\n";
 	#print "Inicia búsqueda de listas de ortologos \n";
