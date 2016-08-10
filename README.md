@@ -49,7 +49,7 @@ Use absolute paths, if you don’t know the path to your dir, place yourself on 
 **/usr/src/CORE** is fixed at the docker images, you should always use this name.  
 
 
-### 2.3 Run CORASON inside your docker  
+### 2.3 Run ORTHOCORE inside your docker  
 
 `$ orthocore.pl -q yourquery.query -rast_ids yourRAST.Ids `
 once you finished all your queries exit the container  
