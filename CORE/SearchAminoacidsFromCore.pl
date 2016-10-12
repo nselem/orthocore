@@ -78,7 +78,7 @@ sub ReadFasta{
 	foreach my $mini(@ALL){
 		chomp($mini);
 		####### llena hash con encabezado-secuencia#####
-		open (CU, "$dir/GENOMES/$mini.faa") or die "Could not open $dir/$outname/$mini.faa $!\n\n";
+		open (CU, "$dir/$mini.faa") or die "Could not open $dir/$mini.faa $!\n\n";
 		#print "$dir/MINI/$mini.faa\n";
 		
   		while(<CU>){	
