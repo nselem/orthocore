@@ -41,7 +41,7 @@ file.query (aminoacid fasta file) Save as many queries as you wish to process.
 
 ### 2.2 Run your docker nselem/evodivmet image  
 
-`$ docker run -i -t -v /mypath/mydir:/usr/src/CORE  orthocore /bin/bash`
+`$ docker run -i -t -v /mypath/mydir:/usr/src/CORE  nselem/orthocores:latest /bin/bash`
 
 **/mypath/mydir/** is your local directory were you store your inputs, can have any name you choose.  
 Use absolute paths, if you don’t know the path to your dir, place yourself on your directory and type on the terminal  
