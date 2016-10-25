@@ -1,4 +1,4 @@
-`docker run -i -t -v /home/nelly/docker-core:/usr/src/CORE orthocore /bin/bash`
+`docker run -i -t -v /home/nelly/docker-core:/usr/src/CORE nselem/orthocores:latest /bin/bash`
 
 ## orthoCORE Installation guide
 
