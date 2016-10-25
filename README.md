@@ -24,7 +24,7 @@ Test your docker engine with the command:
 `$ docker run hello-world`  
 
 ###1 Download ORTHOCORE images from DockerHub
-`$ docker pull nselem/orthocore:latest  `  
+`$ docker pull nselem/orthocores:latest  `  
 
 #####Important  
 `docker pull ` may be slow depending on your internet connection, because nselem/evodivmet docker-image is being downloaded, its only this time won’t happen again.
