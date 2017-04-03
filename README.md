@@ -51,7 +51,7 @@ Use absolute paths, if you don’t know the path to your dir, place yourself on 
 
 ### 2.3 Run ORTHOCORE inside your docker  
 
-`$ orthocore.pl -q yourquery.query -rast_ids yourRAST.Ids `
+`$ orthocore.pl -rast_ids yourRAST.Ids `
 once you finished all your queries exit the container  
 `$ exit`  
 ### 2.4 Read your results ! 
@@ -66,6 +66,8 @@ On this example query file was yourquery.query and input directory was /home/myd
 Code and docker file located at:  
 [Code] (https://github.com/nselem/EvoDivMet  )  
 [Docker] (https://hub.docker.com/r/nselem/evodivmet/  )  
+More information about Orthocore in:
+[Wiki] (https://github.com/nselem/orthocore/wiki)
 
 ### curl installation
 - `$ which curl`
