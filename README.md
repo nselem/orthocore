@@ -66,7 +66,7 @@ On this example query file was yourquery.query and input directory was /home/myd
 Code and docker file located at:  
 [Code] (https://github.com/nselem/EvoDivMet  )  
 [Docker] (https://hub.docker.com/r/nselem/evodivmet/  )  
-More information about Orthocore in:
+More information about Orthocore in:  
 [Wiki] (https://github.com/nselem/orthocore/wiki)
 
 ### curl installation
