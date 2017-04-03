@@ -34,10 +34,10 @@ Test your docker engine with the command:
 Create an empty directory that contains your [[Input Files]]: RAST-genome data base, Rast_Ids file and file.query  
 `$ mkdir mydir`  
 place inside my dir your files:  
-![mydir.png](https://github.com/nselem/EvoDivMet/blob/master/IMAGES/mydir3.png)  
+![mydir.png](https://github.com/a-yanez/orthocore/blob/master/IMAGES/mydir3_edit.png)  
 GENOMES    (dir)  
 RAST_IDs   (tab separated file)  
-file.query (aminoacid fasta file) Save as many queries as you wish to process.  
+
 
 ### 2.2 Run your docker nselem/evodivmet image  
 
@@ -51,7 +51,7 @@ Use absolute paths, if you don’t know the path to your dir, place yourself on 
 
 ### 2.3 Run ORTHOCORE inside your docker  
 
-`$ orthocore.pl -q yourquery.query -rast_ids yourRAST.Ids `
+`$ orthocore.pl -rast_ids yourRAST.Ids `
 once you finished all your queries exit the container  
 `$ exit`  
 ### 2.4 Read your results ! 
@@ -66,6 +66,8 @@ On this example query file was yourquery.query and input directory was /home/myd
 Code and docker file located at:  
 [Code] (https://github.com/nselem/EvoDivMet  )  
 [Docker] (https://hub.docker.com/r/nselem/evodivmet/  )  
+More information about Orthocore in:  
+[Wiki] (https://github.com/nselem/orthocore/wiki)
 
 ### curl installation
 - `$ which curl`
