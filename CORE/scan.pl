@@ -35,11 +35,12 @@ GetOptions(
         'set_name=s' => \my $setname,
         'my_blast=s' => \my $myblast,
         'e_core=f'=>\(my $e_core=0.001) ,
+	'initial=f'=>\(my $initial=2) ,
+        'add=f'=>\(my $add=1) ,
         'list=s'=>\(my $lista=""), ##Wich genomes would you process in case you might, otherwise left empty for whole DB search
         'rast_ids=s' => \my $rast_ids,
 	'mode=s'=> \(my $mode="g"),
         'help'     =>   sub { HelpMessage(0) },
-	
         ) or HelpMessage(1);
 
 die "$0 requires the rast_ids file (--rast_ids\nfor help type:\nscan.pl -h" unless $rast_ids;  ## A genome names list is mandatory
@@ -52,7 +53,7 @@ close(FILE);
 my $num = @lines;
 
 if ($mode eq "g"){
-	growing($num,$rast_ids,$setname);
+	growing($num,$rast_ids,$setname,$initial,$add);
 	}
 elsif ($mode eq "r"){
 	removing($num,$rast_ids,$setname);
@@ -82,8 +83,10 @@ sub growing{
 	my $num=shift;
         my $rast_ids=shift;
         my $setname=shift;
+        my $initial=shift;
+        my $add=shift;
 
-	for (my $i=2;$i<=$num;$i++){
+	for (my $i=$initial;$i<=$num;$i=$i+$add){
 		 my $newIds="g".$i."rast_ids";
                  my $newSet="g".$i."_".$setname;
                  ######### Print a file without some lines
