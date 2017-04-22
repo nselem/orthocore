@@ -37,7 +37,7 @@ GetOptions(
         'e_core=f'=>\(my $e_core=0.001) ,
 	'initial=f'=>\(my $initial=2) ,
         'add=f'=>\(my $add=1) ,
-        'list=s'=>\(my $lista=""), ##Wich genomes would you process in case you might, otherwise left empty for whole DB search
+        'list=s'=>\(my $lista=""), ##Which genomes would you process in case you might, otherwise left empty for whole DB search
         'rast_ids=s' => \my $rast_ids,
 	'mode=s'=> \(my $mode="g"),
         'help'     =>   sub { HelpMessage(0) },
@@ -89,10 +89,14 @@ sub growing{
 	for (my $i=$initial;$i<=$num;$i=$i+$add){
 		 my $newIds="g".$i."rast_ids";
                  my $newSet="g".$i."_".$setname;
-                 ######### Print a file without some lines
+                 my $Rast_list=`head -n $i $rast_ids | cut -f 1`;
+		 my @Rast_array = split('\n',$Rast_list);
+		 my $newBlast="g".$i."blast"; 	
+		 ######### Print a file without some lines
                  system (" perl -ne \'print if \$\. <= $i\'  $rast_ids > $newIds");
-                 print ("CoreCluster.pl -rast_ids $newIds -v -set_name $newSet -my_blast $myblast\n");
-                 system ("CoreCluster.pl -rast_ids $newIds -v -set_name $newSet -my_blast $myblast");
+		 grepping($myblast,$newBlast,@Rast_array);  ## making blast file smaller to save time               
+		 print ("CoreCluster.pl -rast_ids $newIds -v -set_name $newSet -my_blast $newBlast\n");
+                 system ("CoreCluster.pl -rast_ids $newIds -v -set_name $newSet -my_blast $newBlast");
 		 my $coresize=`grep 'Aminoacid array size' $newSet/$newSet\_Report`;
 		 $coresize=~s/Aminoacid array size \= //;
 		 $coresize=int ($coresize);
@@ -102,3 +106,18 @@ sub growing{
 		
 	}
 }
+
+sub grepping {
+	my $myblast=shift;	
+	my $newBlast=shift;
+	my @array=@_;
+	print(" grepping blast file... \n");
+	my $rastNum=join("|",@array);
+	my $grepFeed=("\'\($rastNum\).*\($rastNum\)\'");  
+#	print ("el grepFeed es $grepFeed\n");	
+	#print ( "\n system echo grep -E $grepFeed $myblast > $newBlast\n");
+	system("grep -E $grepFeed $myblast > $newBlast");
+
+}
+
+
