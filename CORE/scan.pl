@@ -89,7 +89,7 @@ sub growing{
 	for (my $i=$initial;$i<=$num;$i=$i+$add){
 		 my $newIds="g".$i."rast_ids";
                  my $newSet="g".$i."_".$setname;
-                 my $Rast_list=`head -n $i $newIds | cut -f 1`;
+                 my $Rast_list=`head -n $i $rast_ids | cut -f 1`;
 		 my @Rast_array = split('\n',$Rast_list);
 		 my $newBlast="g".$i."blast"; 	
 		 ######### Print a file without some lines
