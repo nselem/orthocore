@@ -35,9 +35,10 @@ Create an empty directory that contains your [[Input Files]]: RAST-genome data b
 `$ mkdir mydir`    
 place your files inside mydir:  
 
-![mydir.png](https://github.com/a-yanez/orthocore/blob/master/IMAGES/mydir3_edit.png)  `
-GENOMES    (dir)  
-RAST_IDs   (tab separated file)  
+![mydir.png](https://github.com/a-yanez/orthocore/blob/master/IMAGES/mydir3_edit.png)  
+  `
+GENOMES    (dir)   
+RAST_IDs   (tab separated file)   
 
 
 ### 2.2 Run your docker nselem/evodivmet image   
