@@ -31,17 +31,17 @@ Test your docker engine with the command:
 
 ### 2 Run ORTHOCORE
 #### 2.1 Set your database  
-Create an empty directory that contains your [[Input Files]]: RAST-genome data base, Rast_Ids file
-`$ mkdir mydir`  
-place your files inside mydir:
+Create an empty directory that contains your [[Input Files]]: RAST-genome data base, Rast_Ids file  
+`$ mkdir mydir`    
+place your files inside mydir:  
 
 ![mydir.png](https://github.com/a-yanez/orthocore/blob/master/IMAGES/mydir3_edit.png)  `
 GENOMES    (dir)  
 RAST_IDs   (tab separated file)  
 
 
-### 2.2 Run your docker nselem/evodivmet image  
-`cd /mypath/mydir`  
+### 2.2 Run your docker nselem/evodivmet image   
+`cd /mypath/mydir`   
 `$ docker run -i -t -v $(pwd):/usr/src/CORE  nselem/orthocores:latest /bin/bash`
 
 **/mypath/mydir/** is your local directory were you store your inputs, can have any name you choose.  
