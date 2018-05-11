@@ -1,4 +1,4 @@
-`docker run -i -t -v /home/nelly/docker-core:/usr/src/CORE nselem/orthocores:latest /bin/bash`
+`docker run -i -t -v $(pwd):/usr/src/CORE nselem/orthocores:latest /bin/bash`
 
 ## orthoCORE Installation guide
 
@@ -31,17 +31,18 @@ Test your docker engine with the command:
 
 ### 2 Run ORTHOCORE
 #### 2.1 Set your database  
-Create an empty directory that contains your [[Input Files]]: RAST-genome data base, Rast_Ids file and file.query  
+Create an empty directory that contains your [[Input Files]]: RAST-genome data base, Rast_Ids file
 `$ mkdir mydir`  
-place inside my dir your files:  
-![mydir.png](https://github.com/a-yanez/orthocore/blob/master/IMAGES/mydir3_edit.png)  
-GENOMES    (dir)  
+place your files inside mydir:
+
+![mydir.png](https://github.com/a-yanez/orthocore/blob/master/IMAGES/mydir3_edit.png)  `
+GENOMES    (dir)  
 RAST_IDs   (tab separated file)  
 
 
-### 2.2 Run your docker nselem/evodivmet image  
-
-`$ docker run -i -t -v /mypath/mydir:/usr/src/CORE  nselem/orthocores:latest /bin/bash`
+### 2.2 Run your docker nselem/evodivmet image  
+`cd /mypath/mydir`  
+`$ docker run -i -t -v $(pwd):/usr/src/CORE  nselem/orthocores:latest /bin/bash`
 
 **/mypath/mydir/** is your local directory were you store your inputs, can have any name you choose.  
 Use absolute paths, if you don’t know the path to your dir, place yourself on your directory and type on the terminal  
