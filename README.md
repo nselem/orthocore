@@ -9,7 +9,7 @@
 Follow the steps, and type the commands into your terminal, do not type $.  
 
 ### 1. Install docker engine
-orthoCORE runs on docker, if you have docker engine installed skip this step. This are Linux minimal docker installation guide, if you don't use Linux or you look for a detailed tutorial on Linux/Windows/Mac Docker engine installation please consult [Docker getting Starting] (https://docs.docker.com/linux/step_one/).  
+orthoCORE runs on docker, if you have docker engine installed skip this step. This are Linux minimal docker installation guide, if you don't use Linux or you look for a detailed tutorial on Linux/Windows/Mac Docker engine installation please consult [Docker getting Starting](https://docs.docker.com/linux/step_one/).  
 
 `$ curl -fsSL https://get.docker.com/ | sh `  
 *if you don’t have curl search on this document curl installation  
@@ -31,7 +31,8 @@ Test your docker engine with the command:
 
 ### 2 Run ORTHOCORE
 #### 2.1 Set your database  
-Create an empty directory that contains your [[Input Files]]: RAST-genome data base, Rast_Ids file  
+Create an empty directory that contains your:  
+RAST-genome data base, Rast_Ids file  
 `$ mkdir mydir`    
 place your files inside mydir:  
 
@@ -66,8 +67,8 @@ Outputs will be on the new folder /mypath/mydir/query
 On this example query file was yourquery.query and input directory was /home/mydir, output files are located on /home/mydir/yourquery  
 ### Links  
 Code and docker file located at:  
-[Code] (https://github.com/nselem/EvoDivMet  )  
-[Docker] (https://hub.docker.com/r/nselem/evodivmet/  )  
+[Code](https://github.com/nselem/EvoDivMet  )  
+[Docker](https://hub.docker.com/r/nselem/evodivmet/  )  
 More information about Orthocore in:  
 [Wiki] (https://github.com/nselem/orthocore/wiki)
 
